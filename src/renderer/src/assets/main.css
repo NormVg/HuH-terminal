@@ -1,0 +1,61 @@
+
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000000;
+  overflow: hidden;
+  /* overflow: hidden;
+  background-image: url('./wavy-lines.svg');
+  background-size: cover;
+  user-select: none; */
+}
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #000000; /* Background of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #34393E; /* Default scrollbar color */
+  border-radius: 4px; /* Rounded corners */
+  transition: background 0.3s ease; /* Smooth color transition */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E61F4460; /* Highlight color on hover */
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #A7D1F5; /* Slightly brighter when active */
+}
+
+
+/* code {
+  font-weight: 600;
+  padding: 3px 5px;
+  border-radius: 2px;
+  background-color: var(--color-background-mute);
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    SF Mono,
+    Menlo,
+    Consolas,
+    Liberation Mono,
+    monospace;
+  font-size: 85%;
+}
+
+#app {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  
+} */
+
