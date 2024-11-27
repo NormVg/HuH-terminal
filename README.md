@@ -1,6 +1,8 @@
 # huh-terminal
 
-An Electron application with Vue
+A low ef for terminal build on vercel theme
+
+## more features are coming soon enough !!
 
 ## Recommended IDE Setup
 
@@ -12,6 +14,8 @@ An Electron application with Vue
 
 ```bash
 $ npm install
+$ npm run rebuildmyelectron
+
 ```
 
 ### Development
@@ -23,6 +27,9 @@ $ npm run dev
 ### Build
 
 ```bash
+$ npm install
+$ npm run rebuildmyelectron
+
 # For windows
 $ npm run build:win
 

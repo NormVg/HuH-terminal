@@ -6,4 +6,5 @@ import MyTerminal from './components/MyTerminal.vue';
 
 <template>
  <MyTerminal/>
+ 
 </template>

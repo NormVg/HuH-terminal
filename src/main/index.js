@@ -1,12 +1,11 @@
-import { app, shell, BrowserWindow, ipcMain,session } from "electron";
+import { app, shell, BrowserWindow, ipcMain, session } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
-import sixel  from 'sixel'
+
 import os from "os";
 
 import pty from "node-pty";
-import { log } from "console";
 
 function createWindow() {
   // Create the browser window.
@@ -14,16 +13,17 @@ function createWindow() {
     width: 900,
     height: 670,
     show: false,
+    icon:"../../resources/icon.png",
     autoHideMenuBar: true,
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
       contextIsolation: true,
       enableRemoteModule: false,
       webSecurity: false, // This disables CSP checks
-      nodeIntegration:true,
+      nodeIntegration: true,
       preload: join(__dirname, "../preload/index.js"),
       sandbox: false,
-      allowRunningInsecureContent: true, 
+      allowRunningInsecureContent: true,
     },
   });
 
@@ -32,66 +32,57 @@ function createWindow() {
     if (!shell) {
       return "bash";
     }
-  
-    const shellName = shell.split('/').pop().toLowerCase(); // Extracts the shell name
-    console.log(shellName)
+
+    const shellName = shell.split("/").pop().toLowerCase(); // Extracts the shell name
+    console.log(shellName);
     return shellName;
   };
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
   });
-  const useBinary = os.platform()!== 'win32'
-  var myshell = os.platform() === "win32" ? "powershell.exe" : getCurrentShell();
+  const useBinary = os.platform() !== "win32";
+  console.log(useBinary);
+  var myshell =
+    os.platform() === "win32" ? "powershell.exe" : getCurrentShell();
   var ptyProcess = pty.spawn(myshell, [], {
-    name: "xterm-color",
+    name: "xterm-256color",
     // cols: 10800,
     // rows: 44,
     cwd: process.env.HOME,
     env: process.env,
-    encoding:useBinary?null:'utf8'
+    encoding: "utf-8",
   });
-  // ptyProcess.write('$SHELL');
-  // mainWindow.webContents.send("terminal-incData", "neofetch");
+    
+  const resizePty = (cols, rows) => {
+    if (ptyProcess) {
+      console.log(cols, rows);
+      ptyProcess.resize(cols, rows);
+    }
+  };
+
   ptyProcess.on("data", (data) => {
-    
-    
     mainWindow?.webContents.send("terminal-incData", data);
-//     if (data instanceof Uint8Array) {
-//       console.log('Data is a Uint8Array');
-//       const width = 204;
-// const height = 202;
-//       // const sixelData = sixel.image2sixel(data, width, height, 256, 1);
-//       mainWindow?.webContents.send("terminal-incData", sixelData);
-//     } else {
-//       console.log('Data is NOT a Uint8Array');
-//       mainWindow?.webContents.send("terminal-incData", data);
-//     }
   });
 
   ipcMain.on("terminal-into", (event, data) => {
     ptyProcess.write(data);
-    
-  });
-  
-  const resizePty = (cols, rows) => {
-    if (ptyProcess) {
-      console.log(cols,rows)
-      ptyProcess.resize(cols, rows);
-    }
-  };
-  
-  ipcMain.on("terminal-resize", (event, data) => {
-    resizePty(data.col,data.row)
   });
 
-  ptyProcess.on('exit', (code, signal) => {
+
+
+  ipcMain.on("terminal-resize", (event, data) => {
+    resizePty(data.col, data.row);
+  });
+
+  ptyProcess.on("exit", (code, signal) => {
     console.log(`Terminal exited with code ${code} and signal ${signal}`);
-    ptyProcess.kill()
-    mainWindow?.webContents.send("terminal-incData-exit", 'TERMINAL_EXIT'); // Send exit signal to the frontend
-    
-});
+    mainWindow?.webContents.send("terminal-incData-exit", "TERMINAL_EXIT"); // Send exit signal to the frontend
+    ptyProcess.kill();
+    mainWindow.close()
+
+  });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url);
