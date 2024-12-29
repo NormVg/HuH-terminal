@@ -83,6 +83,10 @@ const initializeTerminal = () => {
     allowProposedApi: true,
     backend: "conpty",
     buildNumber: 22621,
+
+    fontFamily: "CaskaydiaCove Nerd Font Mono",
+    fontWeight:"normal",
+    fontSize:"14"
   });
 
   const WebGLaddon = new WebglAddon();
